@@ -33,7 +33,7 @@ Risultato: repository ordinato con CI verde dal primo commit e decisioni inizial
 
 **Costruire**
 - [x] 0.1 Creare il repository GitHub con README, licenza (per esempio MIT) e `.gitignore` per Python.
-- [ ] 0.2 Creare la struttura delle cartelle descritta nel `CLAUDE.md`.
+- [x] 0.2 Creare la struttura delle cartelle descritta nel `CLAUDE.md`.
 - [ ] 0.3 Preparare l'ambiente locale: Python 3.11 o superiore, ambiente gestito con uv, Docker.
 - [ ] 0.4 Configurare pre-commit con ruff (`ruff check` e `ruff format`).
 - [ ] 0.5 Creare il `Makefile` con i target minimi elencati nel `CLAUDE.md`.
