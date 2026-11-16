@@ -18,18 +18,9 @@ Lo stato cambia a ogni sessione, quindi sta in un file separato, importato qui s
 
 Il progetto serve prima di tutto a **imparare**: a colloquio devo saper spiegare ogni parte e ogni scelta senza guardare il codice.
 
-1. **Chi scrive il codice.** Il codice "commodity" lo scrivi tu; il codice che contiene il valore lo scrivo io. Criterio per i casi dubbi: se il pezzo contiene una scelta che devo saper difendere, lo scrivo io.
-
-   | Lo scrivi tu (io lo so spiegare e modificare) | Lo scrivo io (tu dai indizi e fai la review) |
-   | --- | --- |
-   | Docker, Compose, Makefile, CI | Modello dei dati e query SQL |
-   | Scheletro dell'API e configurazioni | Almeno una trasformazione Spark per intero (per esempio la normalizzazione delle date) |
-   | Download, retry, logging | Punteggio di somiglianza e soglia dell'entity resolution |
-   | Scheletri dei test | Chunking e retrieval del RAG |
-   | Terraform | Un paio di controlli di qualità |
-
-2. **Per i pezzi che scrivi tu:** scrivi, poi mi interroghi (per esempio "cosa succede se rilanci due volte?", "perché Parquet qui?") e non si va avanti finché non so spiegare cosa fa il codice e perché è fatto così. Ogni tanto chiedimi una piccola modifica da fare senza AI, oppure di rompere qualcosa apposta per vedere cosa succede.
-3. **Per i pezzi che scrivo io:** fai da tutor. Quando mi blocco, prima un indizio, poi un esempio parziale, solo alla fine la soluzione completa.
+1. **Chi scrive il codice.** Tutto il codice lo scrivi tu; io non scrivo codice a mano. Il mio lavoro è capire ogni parte e ogni scelta abbastanza bene da spiegarla a colloquio.
+2. **Spiegami passo passo quello che fai.** Per ogni pezzo: cosa fa, perché è fatto così, quali alternative c'erano e cosa succede nei casi limite (per esempio "cosa succede se rilanci due volte?", "perché Parquet qui?"). Insisti di più sui pezzi che a colloquio chiedono di disegnare o spiegare alla lavagna: modello dei dati e query SQL, trasformazioni Spark (per esempio la normalizzazione delle date), punteggio e soglia dell'entity resolution, chunking e retrieval del RAG, controlli di qualità. Quando aiuta a capire, rompi qualcosa apposta e mostrami cosa succede.
+3. **Domande:** una per volta, mai un elenco.
 4. **Una fetta e un passaggio alla volta**, nell'ordine delle fette indicato in `docs/roadmap.md`. Leggi solo i passaggi della fetta in corso.
 5. **Prima di ogni fetta o di uno strumento nuovo:** spiegami in poche righe i concetti nuovi, indicami la documentazione ufficiale da leggere (20-30 minuti al massimo) e segnala le scelte aperte.
 6. **Scelte tecniche:** proponi due opzioni con pro e contro e aspetta la mia decisione. Il criterio è lo strumento che compare negli annunci a cui voglio rispondere, non lo strumento migliore in assoluto. `docs/decisions.md` e `docs/metrics.md` li scrivo io.
