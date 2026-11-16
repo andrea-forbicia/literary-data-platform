@@ -7,7 +7,7 @@ Aggiornare questo file alla fine di ogni sessione.
 - **Prossimo passo:** 0.3
 - **Note aperte:**
   - Annotare in `docs/decisions.md` le scelte della fetta 1 (ruff, uv, PostgreSQL con pgvector).
-  - Ambiente di sviluppo: per ora Windows con Git Bash, repository sotto `C:\Users\user\Documents\projects\`. WSL2 rimandato.
+  - Ambiente di sviluppo: deciso WSL2 (Ubuntu). Da completare: installare Ubuntu, integrazione con Docker Desktop, spostare il repository in `~/projects/literary-data-platform`, limiti di risorse in `.wslconfig`. La copia sotto `C:\Users\user\Documents\projects\` va cancellata solo dopo aver verificato quella in WSL2.
   - Aggiungere `.gitattributes` (fine riga LF) e `.env.example` nei primi commit.
   - GitHub: aggiungere il revisore come collaborator (ruolo Write), proteggere `main` (pull request obbligatoria e CI verde), attivare secret scanning e push protection.
   - Claude Code: permessi `ask` in `.claude/settings.json` per `terraform apply`/`destroy`, `docker compose down -v`, `docker volume rm`, `docker system prune`, `git push --force`, `gcloud`; skill `/quiz-fase` per il quiz di fine fetta; valutare l'output style "Learning".

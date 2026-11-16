@@ -59,13 +59,13 @@ Il progetto serve prima di tutto a **imparare**: a colloquio devo saper spiegare
 ## Macchina di sviluppo
 
 - **PC fisso:** Intel Core i7-12700K (12 core, 20 thread), 32 GB di RAM, SSD NVMe da 1 TB con circa 465 GB liberi, NVIDIA RTX 4060 Ti.
-- **Sistema:** Windows con Git Bash; ambiente Python gestito con uv (`.venv`). Docker Desktop con backend WSL2 (da verificare nella fase 0).
+- **Sistema:** Windows con WSL2 (Ubuntu). Repository, ambiente Python gestito con uv (`.venv`) e `make` stanno dentro WSL2, in `~/projects/literary-data-platform`. Docker Desktop con backend WSL2 e integrazione attiva per la distribuzione Ubuntu. Ollama resta su Windows per usare la GPU e i container lo raggiungono tramite `host.docker.internal`.
 - **Budget di risorse, valori di partenza da ritoccare misurando:**
   - Docker/WSL2: al massimo 20 GB di RAM e 12 thread, per lasciare margine a IDE e browser.
   - Spark: modalità `local[8]`, 8 GB di memoria per il driver.
   - Ollama: usare la GPU. Verificare la VRAM con `nvidia-smi` (8 o 16 GB) e scegliere un modello che ci stia interamente.
   - Data lake locale: al massimo 100 GB su disco.
-- **Attenzioni per Windows:** fine riga LF (`.gitattributes`), script eseguiti nei container o in WSL2, dati e volumi nel filesystem di WSL2 e non sotto `C:\` (è molto più veloce). `make` va eseguito da WSL2, oppure va installato a parte per Git Bash.
+- **Attenzioni per Windows:** fine riga LF (`.gitattributes`), comandi eseguiti da WSL2 o nei container, dati e volumi nel filesystem di WSL2 e mai sotto `/mnt/c` (è molto più lento).
 
 ## Stack
 
