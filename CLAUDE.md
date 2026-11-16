@@ -59,7 +59,8 @@ Il progetto serve prima di tutto a **imparare**: a colloquio devo saper spiegare
 ## Macchina di sviluppo
 
 - **PC fisso:** Intel Core i7-12700K (12 core, 20 thread), 32 GB di RAM, SSD NVMe da 1 TB con circa 465 GB liberi, NVIDIA RTX 4060 Ti.
-- **Sistema:** Windows con WSL2 (Ubuntu). Repository, ambiente Python gestito con uv (`.venv`) e `make` stanno dentro WSL2, in `~/projects/literary-data-platform`. Docker Desktop con backend WSL2 e integrazione attiva per la distribuzione Ubuntu. Ollama resta su Windows per usare la GPU e i container lo raggiungono tramite `host.docker.internal`.
+- **Portatile (temporaneo):** 12 GB di RAM, i7-4702MQ 4 core / 8 thread. Git Bash su Windows, repository sotto `C:\`, WSL2 limitato a 4 GB da `.wslconfig`. Adatto solo a lavori leggeri: niente Spark né LLM locali. Lo stato del passaggio al PC fisso è in `docs/status.md`.
+- **Sistema (PC fisso):** Windows con WSL2 (Ubuntu). Repository, ambiente Python gestito con uv (`.venv`) e `make` stanno dentro WSL2, in `~/projects/literary-data-platform`. Docker Desktop con backend WSL2 e integrazione attiva per la distribuzione Ubuntu. Ollama resta su Windows per usare la GPU e i container lo raggiungono tramite `host.docker.internal`.
 - **Budget di risorse, valori di partenza da ritoccare misurando:**
   - Docker/WSL2: al massimo 20 GB di RAM e 12 thread, per lasciare margine a IDE e browser.
   - Spark: modalità `local[8]`, 8 GB di memoria per il driver.

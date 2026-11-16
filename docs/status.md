@@ -7,7 +7,8 @@ Aggiornare questo file alla fine di ogni sessione.
 - **Prossimo passo:** 0.3
 - **Note aperte:**
   - Annotare in `docs/decisions.md` le scelte della fetta 1 (ruff, uv, PostgreSQL con pgvector).
-  - Ambiente di sviluppo: deciso WSL2 (Ubuntu). Da completare: installare Ubuntu, integrazione con Docker Desktop, spostare il repository in `~/projects/literary-data-platform`, limiti di risorse in `.wslconfig`. La copia sotto `C:\Users\user\Documents\projects\` va cancellata solo dopo aver verificato quella in WSL2.
+  - Ambiente di sviluppo: deciso WSL2 (Ubuntu) sul PC fisso. Per ora si lavora sul portatile (12 GB di RAM, i7-4702MQ 4 core / 8 thread) con Git Bash, repository in `C:\Users\user\Documents\projects\literary-data-platform`, senza distribuzione Ubuntu. Sul portatile `.wslconfig` limita WSL2 e Docker Desktop a 4 GB e 4 processori. Sul portatile niente Spark né LLM locali: solo i passaggi leggeri della fetta 1.
+  - Al passaggio al PC fisso: installare Ubuntu, integrazione con Docker Desktop, `.wslconfig` con il budget del `CLAUDE.md`, clonare il repository in `~/projects/literary-data-platform`.
   - Aggiungere `.gitattributes` (fine riga LF) e `.env.example` nei primi commit.
   - GitHub: aggiungere il revisore come collaborator (ruolo Write), proteggere `main` (pull request obbligatoria e CI verde), attivare secret scanning e push protection.
   - Claude Code: permessi `ask` in `.claude/settings.json` per `terraform apply`/`destroy`, `docker compose down -v`, `docker volume rm`, `docker system prune`, `git push --force`, `gcloud`; skill `/quiz-fase` per il quiz di fine fetta; valutare l'output style "Learning".
