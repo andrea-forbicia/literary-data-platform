@@ -114,16 +114,19 @@ Da sostituire con i comandi reali appena esistono (fase 0). Target previsti nel 
 
 ## Struttura del repository
 
+Layout `src/`: il codice Python è un pacchetto installato (`literary_data_platform`) e i test lo importano da lì, non dalla cartella corrente.
+
 ```
-ingestion/   download dump e catalogo, producer e consumer dello streaming
-transform/   job PySpark e SQL, entity resolution
-dags/        DAG Airflow
-quality/     controlli sulla qualità del dato
-ai/          chunking, embeddings, retrieval, RAG, text-to-SQL, valutazione
-api/         FastAPI
-infra/       Terraform
+src/literary_data_platform/
+  ingestion/   download dump e catalogo, producer e consumer dello streaming
+  transform/   job PySpark e SQL, entity resolution
+  quality/     controlli sulla qualità del dato
+  ai/          chunking, embeddings, retrieval, RAG, text-to-SQL, valutazione
+  api/         FastAPI
+dags/          DAG Airflow (sottili: chiamano il codice del pacchetto)
+infra/         Terraform
 tests/
-docs/        documenti di riferimento (vedi sotto)
+docs/          documenti di riferimento (vedi sotto)
 ```
 
 ## Documenti di riferimento
