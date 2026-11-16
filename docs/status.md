@@ -3,8 +3,8 @@
 Aggiornare questo file alla fine di ogni sessione.
 
 - **Fetta in corso:** 1, tappa 1 - Repository e CI
-- **Ultimo passaggio completato:** 0.4 (ruff 0.17.5 e pre-commit 4.7.0: ruff check con --fix, ruff format e controlli su file grandi, chiavi private, YAML e TOML)
-- **Prossimo passo:** 0.5
+- **Ultimo passaggio completato:** 0.5 (Makefile con setup, lint, format e test; GNU Make 4.4.1 installato con winget. `up`, `down` e `run-pipeline` arrivano con i file che li richiedono)
+- **Prossimo passo:** 0.6
 - **Note aperte:**
   - Annotare in `docs/decisions.md` le scelte della fetta 1 (ruff, uv, PostgreSQL con pgvector), il layout `src/` e Python 3.12.
   - Ambiente di sviluppo: deciso WSL2 (Ubuntu) sul PC fisso. Per ora si lavora sul portatile (12 GB di RAM, i7-4702MQ 4 core / 8 thread) con Git Bash, repository in `C:\Users\user\Documents\projects\literary-data-platform`, senza distribuzione Ubuntu. Sul portatile `.wslconfig` limita WSL2 e Docker Desktop a 4 GB e 4 processori. Sul portatile niente Spark né LLM locali: solo i passaggi leggeri della fetta 1.

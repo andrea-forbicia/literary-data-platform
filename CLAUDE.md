@@ -94,14 +94,15 @@ Quando una scelta è fatta, sostituire le alternative con la sola scelta e la ve
 
 ## Comandi
 
-Da sostituire con i comandi reali appena esistono (fase 0). Target previsti nel `Makefile`:
+Target del `Makefile` (GNU Make; sul portatile installato con winget). Tutti usano `uv run`, quindi le versioni fissate in `uv.lock`:
 
-- `make setup`: crea l'ambiente con uv e installa le dipendenze
-- `make lint`: `ruff check` e `ruff format --check`
+- `make setup`: crea `.venv` da `uv.lock` (`uv sync --locked`) e installa il hook di pre-commit
+- `make lint`: `ruff check .` e `ruff format --check .`, senza modificare i file (è quello che esegue la CI)
+- `make format`: corregge con `ruff check --fix .` e riformatta con `ruff format .`
 - `make test`: esegue tutta la suite pytest
-- `make up` / `make down`: avvia e spegne lo stack Docker Compose
-- `make run-pipeline`: esegue la pipeline completa in locale
-- Singolo test: `pytest tests/percorso/test_file.py::nome_test`
+- Singolo test: `uv run pytest tests/test_file.py::nome_test`
+
+Da aggiungere quando esisteranno i file che servono: `make up` / `make down` (stack Docker Compose, fetta 1 tappa 2) e `make run-pipeline` (pipeline completa).
 
 ## Struttura del repository
 
