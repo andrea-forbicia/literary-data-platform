@@ -3,10 +3,10 @@
 Aggiornare questo file alla fine di ogni sessione.
 
 - **Fetta in corso:** 1, tappa 1 - Repository e CI
-- **Ultimo passaggio completato:** 0.2 (struttura delle cartelle, con `.gitkeep` finché restano vuote)
-- **Prossimo passo:** 0.3
+- **Ultimo passaggio completato:** 0.3 (uv 0.13.0, Python 3.12 fissato in `.python-version`, layout `src/`, pytest; Docker Desktop 29.9.2 verificato con `hello-world`)
+- **Prossimo passo:** 0.4
 - **Note aperte:**
-  - Annotare in `docs/decisions.md` le scelte della fetta 1 (ruff, uv, PostgreSQL con pgvector).
+  - Annotare in `docs/decisions.md` le scelte della fetta 1 (ruff, uv, PostgreSQL con pgvector), il layout `src/` e Python 3.12.
   - Ambiente di sviluppo: deciso WSL2 (Ubuntu) sul PC fisso. Per ora si lavora sul portatile (12 GB di RAM, i7-4702MQ 4 core / 8 thread) con Git Bash, repository in `C:\Users\user\Documents\projects\literary-data-platform`, senza distribuzione Ubuntu. Sul portatile `.wslconfig` limita WSL2 e Docker Desktop a 4 GB e 4 processori. Sul portatile niente Spark né LLM locali: solo i passaggi leggeri della fetta 1.
   - Al passaggio al PC fisso: installare Ubuntu, integrazione con Docker Desktop, `.wslconfig` con il budget del `CLAUDE.md`, clonare il repository in `~/projects/literary-data-platform`.
   - Aggiungere `.gitattributes` (fine riga LF) e `.env.example` nei primi commit.
