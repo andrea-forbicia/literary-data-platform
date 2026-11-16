@@ -1,0 +1,12 @@
+# Store text files with LF line endings and check them out as LF on every OS,
+# so scripts behave the same on Windows, in WSL2, in containers and in CI.
+* text=auto eol=lf
+
+# Binary files: never convert line endings or diff them as text.
+*.gz      binary
+*.zip     binary
+*.parquet binary
+*.png     binary
+*.jpg     binary
+*.gif     binary
+*.pdf     binary

@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Read-only token: this workflow only needs to check out the code.
+permissions:
+  contents: read
+
+# A new push to the same branch or PR cancels the run that is still going.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          version: "0.13.0"
+          enable-cache: true
+
+      # Installs Python 3.12 (from .python-version) and the exact versions in uv.lock.
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Lint
+        run: make lint
+
+      - name: Test
+        run: make test
