@@ -130,5 +130,5 @@ Da leggere solo quando servono, non a ogni sessione.
 - `docs/dataset.md`: fonti, licenze, uso nel progetto e strategia di sottoinsieme.
 - `docs/decisions.md`: scelte tecniche con motivazioni e alternative scartate.
 - `docs/metrics.md`: numeri reali misurati.
-- `docs/learning/fase-N.md`: le mie note per fase.
+- `docs/learning/fase-N.md`: note di studio per fase, in italiano, scritte da Claude.
 - `docs/interview.md`: domande da colloquio e risposte preparate.
