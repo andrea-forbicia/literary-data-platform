@@ -3,7 +3,7 @@
 Aggiornare questo file alla fine di ogni sessione.
 
 - **Fetta in corso:** 1, tappa 1 - Repository e CI
-- **Ultimo passaggio completato:** 0.7, tranne 0.7.3 (decisioni D1-D6 in `docs/decisions.md`: narrativa inglese 1800-1930, 20 libri per il RAG, nome del repository, ruff, uv, PostgreSQL con pgvector, layout `src/`, Python 3.12). Su mia richiesta `decisions.md` l'ha scritto Claude: lo rileggo e lo riscrivo con parole mie dove serve.
+- **Ultimo passaggio completato:** 0.7, tranne 0.7.3 (decisioni D1-D6 in `docs/decisions.md`: narrativa inglese 1800-1930, 20 libri per il RAG, nome del repository, ruff, uv, PostgreSQL con pgvector, layout `src/`, Python 3.12).
 - **Prossimo passo:** merge della PR del passaggio 0.7, poi chiudere la fase 0 (voci "Capire e saper spiegare" e nota `docs/learning/fase-0.md`), poi 1.4 (download del catalogo e dei testi di Gutenberg).
 - **Note aperte:**
   - 0.7.3 (LLM ed embeddings) rimandata alla tappa 3 della fetta 1: la casella generale 0.7 resta aperta fino ad allora.
