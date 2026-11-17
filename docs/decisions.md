@@ -1,0 +1,158 @@
+# Decisions
+
+Technical and scope decisions, one record per decision, in the style of an
+Architecture Decision Record: context, decision, alternatives considered, consequences.
+New decisions are appended at the end; a decision that changes is marked as superseded,
+not deleted.
+
+## D1. Starting subset: English-language fiction, about 1800-1930
+
+- **Status:** accepted (step 0.7.1)
+- **Context:** both sources are far too large to work on in full, and the project
+  develops on a small sample first. The subset has to give enough overlap between
+  Project Gutenberg and Open Library for the entity resolution (slice 3), and texts
+  that a RAG pipeline can index and be evaluated on.
+- **Decision:** start with English-language fiction published roughly between 1800
+  and 1930.
+- **Alternatives considered:**
+  - *Italian literature, same period.* More distinctive, but Gutenberg has far fewer
+    Italian texts and Open Library covers Italian titles less well, so matching recall
+    would be lower and harder to evaluate. It would also require a multilingual
+    embedding model, with fewer and generally weaker options.
+- **Consequences:**
+  - The largest and best-covered part of both catalogues, so the entity resolution
+    has many candidate matches to measure.
+  - English-only embedding and language models are acceptable (see D3).
+  - Any reviewer can judge the demo answers.
+  - Less original dataset; Italian texts can be added in a later slice if time allows.
+
+## D2. Books for the RAG: a mix designed to test the system
+
+- **Status:** accepted (step 0.7.2)
+- **Context:** an LLM already knows famous classics from its training data, so a
+  correct answer about a well-known novel does not prove that retrieval works. Only an
+  answer that cites the right passage, or a question the model cannot answer from
+  memory, does.
+- **Decision:** about 20 books, chosen to test the system rather than to be the most
+  popular:
+  - **Same-author groups**, where similar books make retrieval harder:
+    - Jane Austen: *Pride and Prejudice*, *Emma*, *Persuasion*, *Northanger Abbey*
+      (same setting and vocabulary).
+    - Charles Dickens: *Great Expectations*, *A Tale of Two Cities*, *Oliver Twist*,
+      *Hard Times* (long texts, many chunks).
+    - Arthur Conan Doyle: *A Study in Scarlet*, *The Sign of the Four*,
+      *The Hound of the Baskervilles* (same characters across books).
+    - H. G. Wells: *The Time Machine*, *The War of the Worlds*, *The Invisible Man*
+      (short novels, a different genre).
+    - Mark Twain: *The Adventures of Tom Sawyer*, *Adventures of Huckleberry Finn*,
+      *The Prince and the Pauper* (shared characters, dialect).
+  - **Lesser-known titles**, which a model is unlikely to answer from memory:
+    George Gissing, *The Odd Women*; Margaret Oliphant, *Miss Marjoribanks*;
+    Charlotte Riddell, *The Uninhabited House*; Mary Elizabeth Braddon,
+    *Lady Audley's Secret* (a middle case).
+- **Alternatives considered:**
+  - *The 20 most downloaded novels.* Familiar to everyone and easy to match to Open
+    Library, but it is hard to show that answers come from retrieval and not from the
+    model's memory, and one book per author gives few hard cases.
+- **Consequences:**
+  - The RAG evaluation can compare famous and lesser-known titles: if the model
+    answers the famous ones without context but not the lesser-known ones, retrieval
+    is shown to matter.
+  - Austen, Dickens and Twain have many editions in Open Library, which exercises the
+    duplicate-handling rule of the entity resolution early.
+  - Choosing the books took more effort, and answers on lesser-known titles are
+    harder to check by hand.
+  - Ebook IDs and availability are not fixed yet: they are verified against the
+    Gutenberg catalogue in step 1.4.
+
+## D3. Local LLM and embedding model: postponed
+
+- **Status:** postponed to stage 3 of slice 1 (step 0.7.3)
+- **Context:** the development laptop cannot run local LLMs; the choice depends on
+  the desktop PC's GPU memory and on the language of the texts.
+- **Decision:** decide in stage 3 of slice 1. Because of D1, an English-only
+  embedding model is acceptable.
+
+## D4. Repository name: `literary-data-platform`
+
+- **Status:** accepted (step 0.7.4)
+- **Context:** the repository is the first thing a recruiter sees, and the target
+  role is Data Engineer / Data & AI Engineer.
+- **Decision:** keep `literary-data-platform` (Python package `literary_data_platform`).
+- **Alternatives considered:**
+  - *A product-like name such as `literary-assistant`.* It matches the user-facing
+    product, but sounds like a chatbot app and hides the data engineering work (lake,
+    Spark, warehouse, Airflow) that is the core of the project. Renaming would also
+    mean changing the package, imports, `pyproject.toml` and docs.
+- **Consequences:** the name signals the main role; the AI part is stated in the
+  first line of the README and in the GitHub repository description.
+
+## D5. Slice 1 tools: ruff, uv, PostgreSQL with pgvector
+
+- **Status:** accepted (step 0.7.5)
+
+### ruff for linting and formatting
+
+- **Context:** code style and common bugs should be checked automatically, on every
+  commit (pre-commit) and in CI.
+- **Decision:** ruff, both `ruff check` and `ruff format`, configured in
+  `pyproject.toml`. No black.
+- **Alternatives considered:**
+  - *black + flake8 + isort.* The classic combination, still common in existing
+    projects, but three tools with three configurations and versions to keep aligned,
+    and slower.
+  - *pylint.* Deeper checks, but slow, noisy and heavy to configure.
+- **Consequences:** one fast tool that covers the flake8 and isort rules, with a
+  formatter largely compatible with black. It does not do pylint's deeper analysis,
+  and type checking would need a separate tool (not used for now).
+
+### uv for the Python environment and dependencies
+
+- **Context:** the project must be reproducible: anyone cloning it, and the CI, must
+  get exactly the same environment.
+- **Decision:** uv manages the Python version (`.python-version`), the `.venv`, the
+  dependencies and the lockfile `uv.lock`. CI runs `uv sync --locked`.
+- **Alternatives considered:**
+  - *pip + venv + requirements.txt.* Universal, but no real lockfile (transitive
+    dependencies are not pinned without pip-tools) and the Python version is managed
+    separately.
+  - *Poetry.* Mature, with a lockfile and common in job postings, but slower, does not
+    manage Python versions and uses partly its own `pyproject.toml` format.
+- **Consequences:** identical environments locally and in CI, fast installs, and a
+  standard `pyproject.toml` (PEP 621). uv is younger than pip and Poetry; the concepts
+  (lockfile, dependency resolution) transfer to Poetry if a team uses it.
+
+### PostgreSQL with pgvector as warehouse and vector store
+
+- **Context:** slice 1 needs a warehouse (raw, staging, curated) and a vector index
+  for the RAG, running locally at zero cost.
+- **Decision:** PostgreSQL with the pgvector extension, which adds the `vector` type,
+  vector distance operators and approximate indexes (HNSW, IVFFlat). The PostgreSQL
+  version is pinned in stage 2 of slice 1.
+- **Alternatives considered:**
+  - *DuckDB as warehouse.* Columnar, embedded and very fast on aggregations and
+    Parquet, but it runs inside a single process, so concurrent writers and readers
+    (Airflow, Spark, the API) are harder to handle.
+  - *A dedicated vector database (Qdrant, Chroma, Weaviate).* More vector-specific
+    features, but one more service to run, and metadata lives apart from the vectors.
+- **Consequences:**
+  - One service is both the warehouse and the vector index.
+  - Retrieval can filter on metadata with plain SQL (`JOIN`, `WHERE`, for example
+    "only Austen's books").
+  - PostgreSQL is common in job postings and supported by dbt.
+  - It is row-oriented, so large analytical queries are slower than on a columnar
+    warehouse. Fine at this project's scale; at real scale BigQuery or Snowflake would
+    fit better.
+
+## D6. Repository layout and Python version
+
+- **Status:** accepted (phase 0)
+- **Decision:** `src/` layout, with the code as an installed package
+  (`literary_data_platform`); Python 3.12 (`requires-python = ">=3.12"`).
+- **Why the `src/` layout:** tests import the installed package, not the current
+  folder, so packaging mistakes show up in the tests instead of being hidden.
+- **Alternatives considered:** *flat layout* (package at the repository root):
+  simpler, but tests can pass by importing local files even when the installed
+  package is broken.
+- **Why Python 3.12:** a recent, stable version supported by the libraries planned
+  for the project (to be rechecked when PySpark and Airflow are added).

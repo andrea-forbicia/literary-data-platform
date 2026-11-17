@@ -39,11 +39,11 @@ Risultato: repository ordinato con CI verde dal primo commit e decisioni inizial
 - [x] 0.5 Creare il `Makefile` con i target minimi elencati nel `CLAUDE.md`.
 - [x] 0.6 Prima GitHub Action che esegue lint e pytest (anche con un test vuoto).
 - [ ] 0.7 Decisioni iniziali, da annotare in `docs/decisions.md`:
-  - [ ] 0.7.1 Sottoinsieme di partenza: lingua, generi o periodo da considerare.
-  - [ ] 0.7.2 Libri di Gutenberg da usare per il RAG (prima selezione, circa 20).
-  - [ ] 0.7.3 LLM locale e modello di embeddings (multilingue se uso testi in italiano). Si può rimandare alla tappa 3 della fetta 1.
-  - [ ] 0.7.4 Nome del repository.
-  - [ ] 0.7.5 Strumenti della fetta 1: ruff, uv, PostgreSQL con pgvector, con il confronto con le alternative.
+  - [x] 0.7.1 Sottoinsieme di partenza: lingua, generi o periodo da considerare.
+  - [x] 0.7.2 Libri di Gutenberg da usare per il RAG (prima selezione, circa 20).
+  - [ ] 0.7.3 LLM locale e modello di embeddings (multilingue se uso testi in italiano). Si può rimandare alla tappa 3 della fetta 1. Rimandata alla tappa 3 (vedi D3 in `docs/decisions.md`).
+  - [x] 0.7.4 Nome del repository.
+  - [x] 0.7.5 Strumenti della fetta 1: ruff, uv, PostgreSQL con pgvector, con il confronto con le alternative.
 
 **Capire e saper spiegare**
 - [ ] Cos'è un container e perché Docker rende il progetto riproducibile.
