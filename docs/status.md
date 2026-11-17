@@ -3,10 +3,11 @@
 Aggiornare questo file alla fine di ogni sessione.
 
 - **Fetta in corso:** 1, tappa 1 - Repository e CI
-- **Ultimo passaggio completato:** 0.6 (GitHub Actions: `uv sync --locked`, `make lint`, `make test` su pull request e push su `main`; primo run verde sulla PR #1)
-- **Prossimo passo:** merge della PR #1, poi 0.7 (decisioni in `docs/decisions.md`, le scrivo io)
+- **Ultimo passaggio completato:** 0.7, tranne 0.7.3 (decisioni D1-D6 in `docs/decisions.md`: narrativa inglese 1800-1930, 20 libri per il RAG, nome del repository, ruff, uv, PostgreSQL con pgvector, layout `src/`, Python 3.12).
+- **Prossimo passo:** merge della PR del passaggio 0.7, poi chiudere la fase 0 (voci "Capire e saper spiegare" e nota `docs/learning/fase-0.md`), poi 1.4 (download del catalogo e dei testi di Gutenberg).
 - **Note aperte:**
-  - Annotare in `docs/decisions.md` le scelte della fetta 1 (ruff, uv, PostgreSQL con pgvector), il layout `src/` e Python 3.12.
+  - 0.7.3 (LLM ed embeddings) rimandata alla tappa 3 della fetta 1: la casella generale 0.7 resta aperta fino ad allora.
+  - Ebook ID dei 20 libri di D2 da verificare sul catalogo di Gutenberg nel passo 1.4.
   - Ambiente di sviluppo: deciso WSL2 (Ubuntu) sul PC fisso. Per ora si lavora sul portatile (12 GB di RAM, i7-4702MQ 4 core / 8 thread) con Git Bash, repository in `C:\Users\user\Documents\projects\literary-data-platform`, senza distribuzione Ubuntu. Sul portatile `.wslconfig` limita WSL2 e Docker Desktop a 4 GB e 4 processori. Sul portatile niente Spark né LLM locali: solo i passaggi leggeri della fetta 1.
   - Al passaggio al PC fisso: installare Ubuntu, integrazione con Docker Desktop, `.wslconfig` con il budget del `CLAUDE.md`, clonare il repository in `~/projects/literary-data-platform`.
   - Aggiungere `.gitattributes` (fine riga LF) e `.env.example` nei primi commit.

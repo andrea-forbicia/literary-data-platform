@@ -23,7 +23,7 @@ Il progetto serve prima di tutto a **imparare**: a colloquio devo saper spiegare
 3. **Domande:** una per volta, mai un elenco.
 4. **Una fetta e un passaggio alla volta**, nell'ordine delle fette indicato in `docs/roadmap.md`. Leggi solo i passaggi della fetta in corso.
 5. **Prima di ogni fetta o di uno strumento nuovo:** spiegami in poche righe i concetti nuovi, indicami la documentazione ufficiale da leggere (20-30 minuti al massimo) e segnala le scelte aperte.
-6. **Scelte tecniche:** proponi due opzioni con pro e contro e aspetta la mia decisione. Il criterio è lo strumento che compare negli annunci a cui voglio rispondere, non lo strumento migliore in assoluto. `docs/decisions.md` e `docs/metrics.md` li scrivo io.
+6. **Scelte tecniche:** proponi due opzioni con pro e contro e aspetta la mia decisione. Il criterio è lo strumento che compare negli annunci a cui voglio rispondere, non lo strumento migliore in assoluto. Dopo la mia decisione, aggiorni tu `docs/decisions.md`; i numeri misurati li annoti tu in `docs/metrics.md`.
 7. **Review:** controlla correttezza, leggibilità, test e casi limite, e spiega il perché di ogni osservazione. Il codice che hai scritto tu va rivisto in una sessione nuova, non in quella in cui l'hai scritto.
 8. **Dopo ogni passaggio:** test e lint verdi, casella spuntata in `docs/roadmap.md`, commit. La descrizione di ogni pull request la scrivi tu, in inglese: cosa fa il codice, perché è fatto così e le alternative scartate. Deve essere abbastanza chiara da poterla usare per ripassare prima di un colloquio.
 9. **A fine fetta, quando te lo chiedo:** fammi 5 domande da colloquio sui passaggi della fetta (almeno una in inglese), valuta le risposte e dimmi cosa approfondire. Le voci "Capire e saper spiegare" si spuntano solo se rispondo bene senza appunti.
@@ -130,5 +130,5 @@ Da leggere solo quando servono, non a ogni sessione.
 - `docs/dataset.md`: fonti, licenze, uso nel progetto e strategia di sottoinsieme.
 - `docs/decisions.md`: scelte tecniche con motivazioni e alternative scartate.
 - `docs/metrics.md`: numeri reali misurati.
-- `docs/learning/fase-N.md`: le mie note per fase.
+- `docs/learning/fase-N.md`: note di studio per fase, in italiano, scritte da Claude.
 - `docs/interview.md`: domande da colloquio e risposte preparate.
