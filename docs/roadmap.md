@@ -50,7 +50,7 @@ Risultato: repository ordinato con CI verde dal primo commit e decisioni inizial
 - [ ] Cos'è la CI e cosa controlla la mia GitHub Action.
 - [ ] Perché uso branch, pull request e commit piccoli anche lavorando da solo.
 - [ ] Perché ho scelto Open Library e Gutenberg, e cosa rende interessante combinarli.
-- [ ] Nota `docs/learning/fase-0.md` scritta.
+- [x] Nota `docs/learning/fase-0.md` scritta.
 
 ## Fase 1 - Ingestione e data lake [MVP]
 Risultato: i dati grezzi delle due fonti arrivano nel data lake, sia in batch sia in streaming.
