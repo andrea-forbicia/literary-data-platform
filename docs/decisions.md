@@ -156,3 +156,56 @@ not deleted.
   package is broken.
 - **Why Python 3.12:** a recent, stable version supported by the libraries planned
   for the project (to be rechecked when PySpark and Airflow are added).
+
+## D7. HTTP client for downloads: `requests`
+
+- **Status:** accepted (step 1.4)
+- **Context:** ingestion downloads the Gutenberg catalogue and a few text files, later
+  the Open Library dumps. Downloads are sequential and deliberately slow (polite
+  access), and large files must be streamed to disk.
+- **Decision:** `requests`, with `stream=True` and `iter_content` for streaming.
+- **Alternatives considered:**
+  - *`httpx`.* Almost the same API, with async support and default timeouts, and it is
+    already used under the hood by FastAPI's test client. Async brings nothing to a
+    sequential, rate-limited download, and `httpx` appears less often in job postings.
+- **Consequences:**
+  - `requests` has no default timeout: every call must pass an explicit `timeout`,
+    otherwise a stalled connection can hang forever.
+  - Retry with backoff is not built in and has to be added (see the retry decision).
+
+## D8. Retry with backoff: our own loop around the whole download
+
+- **Status:** accepted (step 1.4)
+- **Context:** a streamed download can fail in two places: when the request is made
+  (timeout, 429, 5xx) or halfway through, while the body is being read in chunks.
+  Sources can also ask the client to wait: on 2026-11-17 every Gutenberg page answered
+  `503` with `Retry-After: 3600`.
+- **Decision:** a small retry loop written in the project that retries the whole
+  download (request and body) on transient errors only, with exponential backoff. It
+  honours `Retry-After` up to a configurable maximum; above it, it stops with a
+  "source unavailable" error instead of waiting.
+- **Alternatives considered:**
+  - *`urllib3.Retry` mounted on a `requests` `HTTPAdapter`.* Declarative and standard,
+    and it honours `Retry-After` on its own, but it only covers the request: a
+    connection dropped while reading the body is not retried. It would also wait out a
+    one-hour `Retry-After` silently unless that behaviour is turned off.
+  - *A retry library such as `tenacity`.* One more dependency for about 30 lines of
+    logic.
+- **Consequences:** one mechanism covers both failure points, every attempt is logged,
+  and waiting time is bounded. The loop is project code, so it needs its own tests.
+
+## D9. Mocking HTTP in tests: `responses`
+
+- **Status:** accepted (step 1.4)
+- **Context:** download code must be tested without real network calls, which would
+  be slow, flaky and would hit the real sources on every CI run.
+- **Decision:** the `responses` library (development dependency), with its ordered
+  registry so that a sequence such as "503, 503, then 200" is served in order.
+- **Alternatives considered:**
+  - *A fake session written in the tests.* No dependency and full control, but the
+    tests would not go through the real `requests` and `urllib3` code, so a fake that
+    behaves differently from the real thing (decompression, truncated bodies) would let
+    bugs through.
+- **Consequences:** the tests exercise the real transport stack. For example, a body
+  shorter than its `Content-Length` makes `urllib3` raise `ChunkedEncodingError`, exactly
+  as in production.
