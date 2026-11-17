@@ -46,7 +46,7 @@ Risultato: repository ordinato con CI verde dal primo commit e decisioni inizial
   - [x] 0.7.5 Strumenti della fetta 1: ruff, uv, PostgreSQL con pgvector, con il confronto con le alternative.
 
 **Capire e saper spiegare**
-- [ ] Cos'è un container e perché Docker rende il progetto riproducibile.
+- [x] Cos'è un container e perché Docker rende il progetto riproducibile.
 - [ ] Cos'è la CI e cosa controlla la mia GitHub Action.
 - [ ] Perché uso branch, pull request e commit piccoli anche lavorando da solo.
 - [ ] Perché ho scelto Open Library e Gutenberg, e cosa rende interessante combinarli.

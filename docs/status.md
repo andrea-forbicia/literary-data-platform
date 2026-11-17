@@ -4,7 +4,11 @@ Aggiornare questo file alla fine di ogni sessione.
 
 - **Fetta in corso:** 1, tappa 1 - Repository e CI
 - **Ultimo passaggio completato:** 0.7, tranne 0.7.3 (decisioni D1-D6 in `docs/decisions.md`: narrativa inglese 1800-1930, 20 libri per il RAG, nome del repository, ruff, uv, PostgreSQL con pgvector, layout `src/`, Python 3.12).
-- **Prossimo passo:** merge della PR con la nota `docs/learning/fase-0.md`, poi domande sulla fase 0 (una alla volta) per spuntare le voci "Capire e saper spiegare", poi 1.4 (download del catalogo e dei testi di Gutenberg).
+- **Prossimo passo:** 1.4 (download del catalogo e dei testi di Gutenberg). In una prossima sessione, nuove domande sulle voci della fase 0 ancora aperte.
+- **Quiz fase 0 (2026-11-17):** spuntata solo la voce su Docker. Da approfondire prima della prossima domanda (sezioni 2-4 di `docs/learning/fase-0.md`):
+  - CI: la CI controlla, la branch protection impone il merge con CI verde; cosa fa `uv sync --locked` con un lockfile non allineato.
+  - Branch e PR: motivi concreti (`main` sempre funzionante, PR come punto della CI, revert e bisect, descrizione come documentazione).
+  - Fonti: nessuna chiave comune, matching approssimato su titolo e autore, misurato con precisione e recall.
 - **Note aperte:**
   - 0.7.3 (LLM ed embeddings) rimandata alla tappa 3 della fetta 1: la casella generale 0.7 resta aperta fino ad allora.
   - Ebook ID dei 20 libri di D2 da verificare sul catalogo di Gutenberg nel passo 1.4.
