@@ -72,6 +72,8 @@ not deleted.
   the desktop PC's GPU memory and on the language of the texts.
 - **Decision:** decide in stage 3 of slice 1. Because of D1, an English-only
   embedding model is acceptable.
+- **Update (2026-11-27):** the laptop is no longer used. Development runs only on
+  the desktop PC, whose RTX 4060 Ti has 16 GB of VRAM (checked with `nvidia-smi`).
 
 ## D4. Repository name: `literary-data-platform`
 

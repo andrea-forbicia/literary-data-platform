@@ -24,7 +24,7 @@ Risultato della fase: repository ordinato, CI verde dal primo commit, decisioni 
 | Peso | decine o centinaia di MB | GB |
 | Isolamento | buono, ma meno forte | più forte |
 
-Su Windows i container Linux non possono usare il kernel di Windows: Docker Desktop li fa girare dentro la macchina virtuale leggera di WSL2, che ha un kernel Linux. Per questo `.wslconfig` limita la RAM e i processori di Docker.
+Su Windows i container Linux non possono usare il kernel di Windows: nel progetto Docker Engine è installato dentro Ubuntu in WSL2, cioè in una macchina virtuale leggera con un kernel Linux, e i container girano lì. Per questo `.wslconfig` limita la RAM e i processori di WSL2, e quindi anche di Docker.
 
 ### Perché rende il progetto riproducibile
 
