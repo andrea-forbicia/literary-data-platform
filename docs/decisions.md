@@ -261,3 +261,27 @@ not deleted.
   - `Issued` is the date a book entered Project Gutenberg, not its publication year,
     so the 1800-1930 period of D1 can only be estimated from the authors' life dates.
   - The RDF can be added in slice 3 if entity resolution needs it.
+
+## D12. Snapshot date in raw paths: the download date
+
+- **Status:** accepted (step 1.4, piece 2)
+- **Context:** raw files are stored by source and snapshot date, for example
+  `raw/gutenberg/<date>/pg_catalog.csv.gz`, and the downloader skips a file whose
+  final path already exists. The date in the path therefore decides when a new copy is
+  downloaded. The mirror sends `Last-Modified` (2026-11-08 for the catalogue
+  downloaded on 2026-11-27).
+- **Decision:** the date of the download (UTC), or the date passed explicitly on the
+  command line. This is ingestion-time partitioning.
+- **Alternatives considered:**
+  - *The source date from `Last-Modified`.* The path would identify the version of the
+    catalogue, and a run on another day would find the file and download nothing. But
+    it needs an extra `HEAD` request, depends on a header that a mirror may not send or
+    may send differently, and does not match the logical date of an Airflow run, which
+    makes backfills by date harder to reason about.
+- **Consequences:**
+  - Runs on different days of an unchanged catalogue store identical copies (5.6 MB
+    each). Staging recognises them by their SHA-256, which the downloader already
+    computes.
+  - A run on the same day is idempotent: the file exists and is skipped.
+  - The date can be passed explicitly, which is what an Airflow DAG will do with its
+    logical date in phase 3.

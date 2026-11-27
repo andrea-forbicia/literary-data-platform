@@ -102,6 +102,9 @@ Target del `Makefile` (GNU Make, dentro WSL2). Tutti usano `uv run`, quindi le v
 - `make format`: corregge con `ruff check --fix .` e riformatta con `ruff format .`
 - `make test`: esegue tutta la suite pytest
 - Singolo test: `uv run pytest tests/test_file.py::nome_test`
+- `make gutenberg-catalog`: scarica il catalogo CSV di Gutenberg in `$DATA_DIR/raw/gutenberg/<data>/`
+
+Il `Makefile` carica `.env`, se esiste: copiare `.env.example` in `.env` prima dei target che scaricano dati.
 
 Da aggiungere quando esisteranno i file che servono: `make up` / `make down` (stack Docker Compose, fetta 1 tappa 2) e `make run-pipeline` (pipeline completa).
 
