@@ -10,15 +10,24 @@ body) are retried with exponential backoff. The whole download is retried, not o
 the request, so a connection that drops halfway through the body is covered too. A
 wait asked by the server with ``Retry-After`` is honoured up to a limit; above it the
 download stops with ``SourceUnavailableError`` instead of blocking for a long time.
+
+Two runs can download the same file at the same time, for example when an Airflow
+retry starts while the first try is still running. They would share the ``.part``
+file and mix their bytes, so each download holds an exclusive lock on a
+``<name>.lock`` file next to it. The second run waits for the first one, then finds
+the final file and skips it, without a second request to the source.
 """
 
 from __future__ import annotations
 
 import email.utils
+import fcntl
 import hashlib
 import logging
+import os
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -97,6 +106,8 @@ def download_file(
 ) -> DownloadResult:
     """Download ``url`` to ``dest``, unless ``dest`` already exists.
 
+    If another process is downloading the same ``dest``, wait for it to finish.
+
     Args:
         session: HTTP session, so that connections and headers are shared across calls.
         url: address of the file.
@@ -114,12 +125,28 @@ def download_file(
     """
     retry = retry or RetryPolicy()
 
+    # Fast path without the lock: a file with its final name is always complete.
     if dest.exists():
-        size, digest = _file_stats(dest, chunk_size)
-        logger.info("Skipping %s: %s already exists", url, dest)
-        return DownloadResult(url, dest, size, digest, downloaded=False)
+        return _skip(url, dest, chunk_size)
 
     dest.parent.mkdir(parents=True, exist_ok=True)
+    with _exclusive_lock(dest.with_name(dest.name + ".lock")):
+        # Check again: another run may have finished the file while we waited.
+        if dest.exists():
+            return _skip(url, dest, chunk_size)
+        return _download_with_retry(session, url, dest, timeout, retry, chunk_size, sleep)
+
+
+def _download_with_retry(
+    session: requests.Session,
+    url: str,
+    dest: Path,
+    timeout: float,
+    retry: RetryPolicy,
+    chunk_size: int,
+    sleep: Callable[[float], None],
+) -> DownloadResult:
+    """The retry loop of ``download_file``; the caller holds the lock on ``dest``."""
     part = dest.with_name(dest.name + ".part")
 
     for attempt in range(1, retry.max_attempts + 1):
@@ -158,6 +185,31 @@ def download_file(
     raise AssertionError("unreachable: the last attempt either returns or raises")
 
 
+def _skip(url: str, dest: Path, chunk_size: int) -> DownloadResult:
+    """Result for a file that already exists, which is not downloaded again."""
+    size, digest = _file_stats(dest, chunk_size)
+    logger.info("Skipping %s: %s already exists", url, dest)
+    return DownloadResult(url, dest, size, digest, downloaded=False)
+
+
+@contextmanager
+def _exclusive_lock(path: Path) -> Iterator[None]:
+    """Hold an exclusive ``flock`` on ``path``, waiting if another process holds it.
+
+    The kernel releases the lock when the file is closed, also when the process is
+    killed, so a crash never leaves a stale lock. The lock file is left in place on
+    purpose: deleting it while another process waits on it would let a third process
+    lock a new file with the same name, and two downloads would run at once again.
+    """
+    with path.open("a") as file:
+        try:
+            fcntl.flock(file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            logger.info("Waiting for another download holding %s", path)
+            fcntl.flock(file, fcntl.LOCK_EX)
+        yield
+
+
 def parse_retry_after(value: str | None, now: datetime | None = None) -> float | None:
     """Seconds to wait according to a ``Retry-After`` header, or None if unusable.
 
@@ -167,7 +219,9 @@ def parse_retry_after(value: str | None, now: datetime | None = None) -> float |
     if value is None:
         return None
     value = value.strip()
-    if value.isdigit():
+    # isdecimal, not isdigit: isdigit accepts characters such as "²" that float()
+    # cannot parse.
+    if value.isdecimal():
         return float(value)
     try:
         when = email.utils.parsedate_to_datetime(value)
@@ -201,6 +255,10 @@ def _stream_to_file(
                     file.write(chunk)
                     digest.update(chunk)
                     size += len(chunk)
+                # Make the bytes durable before the rename in the caller: otherwise,
+                # after a power cut, the rename could survive and the data not.
+                file.flush()
+                os.fsync(file.fileno())
     except RETRYABLE_EXCEPTIONS as exc:
         raise _TransientError(f"{type(exc).__name__}: {exc}") from exc
 
@@ -219,7 +277,7 @@ def _expected_size(response: requests.Response) -> int | None:
     if response.headers.get("Content-Encoding", "identity") != "identity":
         return None
     length = response.headers.get("Content-Length")
-    return int(length) if length is not None and length.isdigit() else None
+    return int(length) if length is not None and length.isdecimal() else None
 
 
 def _file_stats(path: Path, chunk_size: int) -> tuple[int, str]:
