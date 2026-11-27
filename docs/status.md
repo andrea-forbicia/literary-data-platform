@@ -5,14 +5,13 @@ Aggiornare questo file alla fine di ogni sessione.
 - **Fetta in corso:** 1, tappa 1 - Repository e CI
 - **Ultimo passaggio completato:** 0.7, tranne 0.7.3 (decisioni D1-D6 in `docs/decisions.md`: narrativa inglese 1800-1930, 20 libri per il RAG, nome del repository, ruff, uv, PostgreSQL con pgvector, layout `src/`, Python 3.12).
 - **Passo in corso:** 1.4, diviso in tre pezzi:
-  1. Downloader generico (`ingestion/download.py`: streaming, `.part` atomico, idempotenza, retry con backoff e `Retry-After` limitato, SHA-256): fatto (PR #6). Review del 2026-11-27 in una sessione nuova: corretta la corsa tra due download dello stesso file (lock con `flock`, D10), aggiunti `fsync` prima della rinomina e test mancanti. PR della correzione aperta. Decisioni D7-D10.
+  1. Downloader generico (`ingestion/download.py`: streaming, `.part` atomico, idempotenza, retry con backoff e `Retry-After` limitato, SHA-256): fatto (PR #6). Review del 2026-11-27 in una sessione nuova: corretta la corsa tra due download dello stesso file (lock con `flock`, D10), aggiunti `fsync` prima della rinomina e test mancanti. Correzione nel merge su `main` con la PR #8. Decisioni D7-D10.
   2. Catalogo di Gutenberg (CSV, RDF da decidere): da fare. Il 2026-11-17 il sito era in manutenzione (503, `Retry-After: 3600`): prima verificare su *Offline Catalogs* e *Robot Access Policy* URL, colonne e regole, e annotarli in `docs/dataset.md`.
   3. Testi dei 20 libri di D2 da un mirror, con ebook ID verificati sul catalogo: da fare.
-- **Prossimo passo:** merge della PR di correzione del downloader, poi il pezzo 2 quando il sito di Gutenberg risponde. Nel pezzo 2 il percorso del catalogo deve contenere la data dello snapshot, perché il downloader non riscarica un file che esiste già. In una prossima sessione, nuove domande sulle voci della fase 0 ancora aperte.
-- **Quiz fase 0 (2026-11-17):** spuntata solo la voce su Docker. Da approfondire prima della prossima domanda (sezioni 2-4 di `docs/learning/fase-0.md`):
-  - CI: la CI controlla, la branch protection impone il merge con CI verde; cosa fa `uv sync --locked` con un lockfile non allineato.
-  - Branch e PR: motivi concreti (`main` sempre funzionante, PR come punto della CI, revert e bisect, descrizione come documentazione).
-  - Fonti: nessuna chiave comune, matching approssimato su titolo e autore, misurato con precisione e recall.
+- **Prossimo passo:** il pezzo 2, quando il sito di Gutenberg risponde. Nel pezzo 2 il percorso del catalogo deve contenere la data dello snapshot, perché il downloader non riscarica un file che esiste già.
+- **Quiz fase 0:** completo. Il 2026-11-17 spuntata la voce su Docker, il 2026-11-27 le altre tre (CI, branch e PR, fonti). Tutte le voci "Capire e saper spiegare" della fase 0 sono spuntate; la fase 0 si chiude con la 0.7.3 nella tappa 3. Da allenare: le prime risposte erano parole chiave e sono diventate complete solo con le domande di approfondimento. A colloquio serve la risposta intera, con un esempio concreto:
+  - Branch e PR: citare anche la descrizione della PR come documentazione; esempio del revert della PR #8 (squash merge: `git revert <commit>`; con un merge commit serve `-m 1`).
+  - Fonti: dire cosa porta ciascuna (Open Library catalogo e dati sporchi, Gutenberg testi per il RAG) e definire precisione e recall sul caso concreto: precisione = quota corretta tra le coppie abbinate, recall = quota trovata tra i libri di Gutenberg che hanno davvero un'opera su Open Library.
 - **Note aperte:**
   - 0.7.3 (LLM ed embeddings) rimandata alla tappa 3 della fetta 1: la casella generale 0.7 resta aperta fino ad allora.
   - Ebook ID dei 20 libri di D2 da verificare sul catalogo di Gutenberg nel passo 1.4.

@@ -47,9 +47,9 @@ Risultato: repository ordinato con CI verde dal primo commit e decisioni inizial
 
 **Capire e saper spiegare**
 - [x] Cos'è un container e perché Docker rende il progetto riproducibile.
-- [ ] Cos'è la CI e cosa controlla la mia GitHub Action.
-- [ ] Perché uso branch, pull request e commit piccoli anche lavorando da solo.
-- [ ] Perché ho scelto Open Library e Gutenberg, e cosa rende interessante combinarli.
+- [x] Cos'è la CI e cosa controlla la mia GitHub Action.
+- [x] Perché uso branch, pull request e commit piccoli anche lavorando da solo.
+- [x] Perché ho scelto Open Library e Gutenberg, e cosa rende interessante combinarli.
 - [x] Nota `docs/learning/fase-0.md` scritta.
 
 ## Fase 1 - Ingestione e data lake [MVP]
