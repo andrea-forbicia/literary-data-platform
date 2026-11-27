@@ -49,13 +49,14 @@ Il progetto serve prima di tutto a **imparare**: a colloquio devo saper spiegare
 
 ## Macchina di sviluppo
 
-- **PC fisso:** Intel Core i7-12700K (12 core, 20 thread), 32 GB di RAM, SSD NVMe da 1 TB con circa 465 GB liberi, NVIDIA RTX 4060 Ti.
-- **Portatile (temporaneo):** 12 GB di RAM, i7-4702MQ 4 core / 8 thread. Git Bash su Windows, repository sotto `C:\`, WSL2 limitato a 4 GB da `.wslconfig`. Adatto solo a lavori leggeri: niente Spark né LLM locali. Lo stato del passaggio al PC fisso è in `docs/status.md`.
-- **Sistema (PC fisso):** Windows con WSL2 (Ubuntu). Repository, ambiente Python gestito con uv (`.venv`) e `make` stanno dentro WSL2, in `~/projects/literary-data-platform`. Docker Desktop con backend WSL2 e integrazione attiva per la distribuzione Ubuntu. Ollama resta su Windows per usare la GPU e i container lo raggiungono tramite `host.docker.internal`.
+Una sola macchina di sviluppo, il PC fisso.
+
+- **Hardware:** Intel Core i7-12700K (12 core, 20 thread), 32 GB di RAM, SSD NVMe da 1 TB con circa 465 GB liberi, NVIDIA RTX 4060 Ti con 16 GB di VRAM (verificato con `nvidia-smi` dentro WSL2).
+- **Sistema:** Windows con WSL2 (Ubuntu). Repository, ambiente Python gestito con uv (`.venv`), `make` e git stanno dentro WSL2, in `~/developer/literary-data-platform`. Docker Engine e Ollama girano dentro WSL2 (Ubuntu), senza Docker Desktop; Ollama usa la GPU NVIDIA tramite il driver Windows e i container lo raggiungono tramite l'host (per esempio `host.docker.internal` o l'IP del bridge Docker, da verificare).
 - **Budget di risorse, valori di partenza da ritoccare misurando:**
   - Docker/WSL2: al massimo 20 GB di RAM e 12 thread, per lasciare margine a IDE e browser.
   - Spark: modalità `local[8]`, 8 GB di memoria per il driver.
-  - Ollama: usare la GPU. Verificare la VRAM con `nvidia-smi` (8 o 16 GB) e scegliere un modello che ci stia interamente.
+  - Ollama: usare la GPU e scegliere un modello che stia interamente nei 16 GB di VRAM.
   - Data lake locale: al massimo 100 GB su disco.
 - **Attenzioni per Windows:** fine riga LF (`.gitattributes`), comandi eseguiti da WSL2 o nei container, dati e volumi nel filesystem di WSL2 e mai sotto `/mnt/c` (è molto più lento).
 
@@ -94,7 +95,7 @@ Quando una scelta è fatta, sostituire le alternative con la sola scelta e la ve
 
 ## Comandi
 
-Target del `Makefile` (GNU Make; sul portatile installato con winget). Tutti usano `uv run`, quindi le versioni fissate in `uv.lock`:
+Target del `Makefile` (GNU Make, dentro WSL2). Tutti usano `uv run`, quindi le versioni fissate in `uv.lock`:
 
 - `make setup`: crea `.venv` da `uv.lock` (`uv sync --locked`) e installa il hook di pre-commit
 - `make lint`: `ruff check .` e `ruff format --check .`, senza modificare i file (è quello che esegue la CI)
