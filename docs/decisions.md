@@ -239,3 +239,49 @@ not deleted.
     the old one, and two downloads would run at once again.
   - The same review added `fsync` before the rename, so that after a power cut a file
     with its final name is still a whole file.
+
+## D11. Gutenberg metadata for slice 1: the CSV catalogue only
+
+- **Status:** accepted (step 1.4, piece 2)
+- **Context:** Project Gutenberg publishes its catalogue in several bulk files. On the
+  PGLAF mirror (`https://gutenberg.pglaf.org/cache/epub/feeds/`, 2026-11-27) the CSV
+  `pg_catalog.csv.gz` is 5.6 MB (21 MB uncompressed, dated 2026-11-08), and the RDF
+  archive `rdf-files.tar.bz2` is 127 MB (dated 2026-11-15). Slice 1 needs the catalogue
+  to find the ebook IDs of the 20 books of D2 and for one SQL query in stage 2.
+- **Decision:** download only `pg_catalog.csv.gz` in slice 1.
+- **Alternatives considered:**
+  - *CSV plus RDF.* Richer metadata (expected, to be checked on the files: agents
+    with IDs, separate birth and death years, file formats with URLs, download
+    counts), useful later for entity resolution. But it is 20 times larger, holds one
+    RDF/XML file per book (over 75,000), and needs an XML parser with namespaces:
+    work that slice 1 does not need.
+- **Consequences:**
+  - Authors are free text with life dates (`"Jefferson, Thomas, 1743-1826"`), with no
+    author ID; multi-valued fields are separated by `"; "`.
+  - `Issued` is the date a book entered Project Gutenberg, not its publication year,
+    so the 1800-1930 period of D1 can only be estimated from the authors' life dates.
+  - The RDF can be added in slice 3 if entity resolution needs it.
+
+## D12. Snapshot date in raw paths: the download date
+
+- **Status:** accepted (step 1.4, piece 2)
+- **Context:** raw files are stored by source and snapshot date, for example
+  `raw/gutenberg/<date>/pg_catalog.csv.gz`, and the downloader skips a file whose
+  final path already exists. The date in the path therefore decides when a new copy is
+  downloaded. The mirror sends `Last-Modified` (2026-11-08 for the catalogue
+  downloaded on 2026-11-27).
+- **Decision:** the date of the download (UTC), or the date passed explicitly on the
+  command line. This is ingestion-time partitioning.
+- **Alternatives considered:**
+  - *The source date from `Last-Modified`.* The path would identify the version of the
+    catalogue, and a run on another day would find the file and download nothing. But
+    it needs an extra `HEAD` request, depends on a header that a mirror may not send or
+    may send differently, and does not match the logical date of an Airflow run, which
+    makes backfills by date harder to reason about.
+- **Consequences:**
+  - Runs on different days of an unchanged catalogue store identical copies (5.6 MB
+    each). Staging recognises them by their SHA-256, which the downloader already
+    computes.
+  - A run on the same day is idempotent: the file exists and is skipped.
+  - The date can be passed explicitly, which is what an Airflow DAG will do with its
+    logical date in phase 3.
