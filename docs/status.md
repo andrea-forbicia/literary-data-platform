@@ -5,10 +5,10 @@ Aggiornare questo file alla fine di ogni sessione.
 - **Fetta in corso:** 1, tappa 1 - Repository e CI
 - **Ultimo passaggio completato:** 0.7, tranne 0.7.3 (decisioni D1-D6 in `docs/decisions.md`: narrativa inglese 1800-1930, 20 libri per il RAG, nome del repository, ruff, uv, PostgreSQL con pgvector, layout `src/`, Python 3.12).
 - **Passo in corso:** 1.4, diviso in tre pezzi:
-  1. Downloader generico (`ingestion/download.py`: streaming, `.part` atomico, idempotenza, retry con backoff e `Retry-After` limitato, SHA-256): fatto, nel merge su `main` con la PR #6. Decisioni D7-D9. Da confermare se la review in una sessione nuova è stata fatta.
+  1. Downloader generico (`ingestion/download.py`: streaming, `.part` atomico, idempotenza, retry con backoff e `Retry-After` limitato, SHA-256): fatto (PR #6). Review del 2026-11-27 in una sessione nuova: corretta la corsa tra due download dello stesso file (lock con `flock`, D10), aggiunti `fsync` prima della rinomina e test mancanti. PR della correzione aperta. Decisioni D7-D10.
   2. Catalogo di Gutenberg (CSV, RDF da decidere): da fare. Il 2026-11-17 il sito era in manutenzione (503, `Retry-After: 3600`): prima verificare su *Offline Catalogs* e *Robot Access Policy* URL, colonne e regole, e annotarli in `docs/dataset.md`.
   3. Testi dei 20 libri di D2 da un mirror, con ebook ID verificati sul catalogo: da fare.
-- **Prossimo passo:** review del downloader in una sessione nuova (se non già fatta), poi il pezzo 2 quando il sito di Gutenberg risponde. In una prossima sessione, nuove domande sulle voci della fase 0 ancora aperte.
+- **Prossimo passo:** merge della PR di correzione del downloader, poi il pezzo 2 quando il sito di Gutenberg risponde. Nel pezzo 2 il percorso del catalogo deve contenere la data dello snapshot, perché il downloader non riscarica un file che esiste già. In una prossima sessione, nuove domande sulle voci della fase 0 ancora aperte.
 - **Quiz fase 0 (2026-11-17):** spuntata solo la voce su Docker. Da approfondire prima della prossima domanda (sezioni 2-4 di `docs/learning/fase-0.md`):
   - CI: la CI controlla, la branch protection impone il merge con CI verde; cosa fa `uv sync --locked` con un lockfile non allineato.
   - Branch e PR: motivi concreti (`main` sempre funzionante, PR come punto della CI, revert e bisect, descrizione come documentazione).

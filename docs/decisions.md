@@ -211,3 +211,31 @@ not deleted.
 - **Consequences:** the tests exercise the real transport stack. For example, a body
   shorter than its `Content-Length` makes `urllib3` raise `ChunkedEncodingError`, exactly
   as in production.
+
+## D10. Concurrent downloads of the same file: exclusive `flock` on a lock file
+
+- **Status:** accepted (step 1.4, review of the downloader)
+- **Context:** the `.part` name is fixed, so two runs downloading the same file at the
+  same time (an Airflow retry started while the first try is still alive, or two
+  backfills) write into the same file. The review reproduced it with a slow local
+  server and a source that changed between the two requests: the final file mixed
+  both versions, while the run that renamed it reported the SHA-256 of the bytes it
+  had received, not of the bytes on disk.
+- **Decision:** each download holds an exclusive `fcntl.flock` on `<name>.lock` next to
+  the final file. A second run waits, then checks again whether the final file exists
+  and skips it. The lock file is never deleted.
+- **Alternatives considered:**
+  - *A unique `.part` name per run (`tempfile.mkstemp`).* The usual pattern and no
+    locking, but both runs download the file, so the source gets a duplicate request,
+    and a run killed with `kill -9` leaves orphan `.part` files with random names.
+  - *Creating the lock with `O_CREAT | O_EXCL`.* Portable, but a crashed run leaves a
+    stale lock that blocks every later run until someone removes it by hand.
+- **Consequences:**
+  - The kernel releases a `flock` when the file is closed, also when the process is
+    killed, so there are no stale locks.
+  - `flock` is Unix-only: fine, because everything runs in WSL2 or in containers.
+  - An empty `.lock` file stays next to each downloaded file. Deleting it would let a
+    third run lock a new file with the same name while a second one still waits on
+    the old one, and two downloads would run at once again.
+  - The same review added `fsync` before the rename, so that after a power cut a file
+    with its final name is still a whole file.
